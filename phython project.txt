@@ -1,0 +1,98 @@
+
+# IAS 36 Impairment Calculator Program
+# Program starts here
+
+while True:  # Loop to restart program
+    name = input("Enter your name: ")  # Takes user name
+    designation = input("Enter your designation: ")  # Takes designation
+    emp_id_input = input("Enter your employee ID (numbers only): ")  # Takes employee ID
+
+    if not emp_id_input.isdigit():  # Checks numeric employee ID
+        print("Invalid employee id please enter integer")  # Shows error
+        continue  # Restarts loop
+
+    emp_id = int(emp_id_input)  # Converts ID to integer
+    password = input("Enter password: ")  # Takes password
+
+    if password != emp_id_input:  # Validates password
+        print("Invalid password")  # Shows error
+        continue  # Restarts loop
+
+    while True:  # Main menu loop
+        print("\n1. IAS 36 Summary")  # Summary option
+        print("2. Calculate Impairment")  # Calculation option
+        print("3. Exit")  # Exit option
+        choice = input("Choose an option: ")  # Takes choice
+
+        if choice == "1":  # Summary selected
+            print("\nIAS 36 Summary:")  # Heading
+            print("- Ensures assets not overstated")  # Bullet
+            print("- Applies to non-current assets")  # Bullet
+            print("- Uses recoverable amount")  # Bullet
+            print("- Higher of two values")  # Bullet
+            print("- Value in use discounted cashflows")  # Bullet
+            print("- Fair value less selling costs")  # Bullet
+            print("- Impairment recognized if excess")  # Bullet
+
+        elif choice == "2":  # Calculation selected
+            asset_type = input("Enter asset type: ")  # Takes asset type
+            carrying_amount = float(input("Enter carrying amount: "))  # Takes carrying amount
+            fair_value = float(input("Enter fair value: "))  # Takes fair value
+
+            while True:  # Audit evidence loop
+                audit = input("Audit evidence obtained? (yes/no): ")  # Takes evidence status
+                if audit.lower() == "yes":  # Evidence confirmed
+                    break  # Proceeds
+                print("Please obtain audit evidence")  # Requests evidence
+
+            useful_life = int(input("Enter useful life (years): "))  # Takes useful life
+
+            inflow_option = input("Cash inflow manual or auto? (manual/auto): ")  # Inflow choice
+            outflow_option = input("Cash outflow manual or auto? (manual/auto): ")  # Outflow choice
+
+            if inflow_option == "auto":  # Auto inflow selected
+                inflow = float(input("Enter initial inflow: "))  # Takes initial inflow
+                inflow_rate = float(input("Enter inflow growth percentage: "))  # Takes growth rate
+
+            if outflow_option == "auto":  # Auto outflow selected
+                outflow = float(input("Enter initial outflow: "))  # Takes initial outflow
+                outflow_rate = float(input("Enter outflow growth percentage: "))  # Takes growth rate
+
+            total_cashflow = 0  # Initializes total cashflow
+
+            for year in range(1, useful_life + 1):  # Loop through years
+                if inflow_option == "manual":  # Manual inflow
+                    inflow_year = float(input(f"Enter inflow for year {year}: "))  # Takes inflow
+                else:  # Auto inflow
+                    inflow_year = inflow * (1 + inflow_rate / 100) ** year  # Calculates inflow
+
+                if outflow_option == "manual":  # Manual outflow
+                    outflow_year = float(input(f"Enter outflow for year {year}: "))  # Takes outflow
+                else:  # Auto outflow
+                    outflow_year = outflow * (1 + outflow_rate / 100) ** year  # Calculates outflow
+
+                total_cashflow += inflow_year - outflow_year  # Adds net cashflow
+
+            discount_rate = float(input("Enter discount rate (%): "))  # Takes discount rate
+            confirm = input("Type 'calc' to calculate value in use: ")  # Confirmation
+
+            if confirm == "calc":  # Confirms calculation
+                value_in_use = total_cashflow / (1 + discount_rate / 100)  # Discounts cashflow
+
+                cost_to_sell = float(input("Enter cost to sell: "))  # Takes selling cost
+                fair_value_less_cost = fair_value - cost_to_sell  # Net fair value
+
+                recoverable_amount = max(value_in_use, fair_value_less_cost)  # Higher value
+                impairment = recoverable_amount - carrying_amount  # Calculates impairment
+
+                if impairment < 0:  # Impairment exists
+                    print(f"{impairment} Impairment loss")  # Shows loss
+                else:  # No impairment
+                    print(f"{impairment} No impairment loss")  # Shows result
+
+        elif choice == "3":  # Exit selected
+            print("Program exited")  # Exit message
+            exit()  # Ends program
+
+        else:  # Invalid choice
+            print("Invalid option")  # Error message
